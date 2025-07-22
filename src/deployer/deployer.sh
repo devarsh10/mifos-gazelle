@@ -446,7 +446,7 @@ function deployPhHelmChartFromDir(){
   else
     echo "    Installing Helm chart with default values..."
   fi
-
+  echo "    Helm command: $helm_cmd"
   # Run the install command and capture exit status
   if [ "$debug" = true ]; then
     echo "🔧 Running as $k8s_user: $helm_cmd"
@@ -466,6 +466,7 @@ function deployPhHelmChartFromDir(){
     return 0
   else
     echo -e "${RED}    ❌ Helm install of release '$releaseName' has failed :${RESET}"
+    echo -e "${RED}       try running again using -d true flag for debug information ${RESET}"
     exit 1
   fi
   # # Install the Helm chart from the local directory
