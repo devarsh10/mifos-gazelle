@@ -342,10 +342,10 @@ function preparePaymentHubChart(){
 }
 
 function checkPHEEDependencies() {
-  printf "    Installing Prometheus " 
+  printf "    Installing Prometheus \n" 
   # Install Prometheus Operator if needed as it is a PHEE dependency
   local deployment_name="prometheus-operator"
-  deployment_available=$(kubectl get deployment "$deployment_name" -n "default" -o jsonpath='{.status.conditions[?(@.type=="Available")].status}' > /dev/null 2>&1)
+  deployment_available=$(kubectl get deployment "$deployment_name" -n "default" -o jsonpath='{.status.conditions[?(@.type=="Available")].status}' )
   if [[ "$deployment_available" == "True" ]]; then
     echo -e "${RED} prometheus already installed -skipping install. ${RESET}" 
     return 0
