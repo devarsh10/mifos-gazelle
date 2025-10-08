@@ -404,7 +404,7 @@ function deployPhHelmChartFromDir(){
 function deployPH(){
   # TODO make this a global variable
   gazelleChartPath="$APPS_DIR/$PH_EE_ENV_TEMPLATE_REPO_DIR/helm/gazelle"
-  result=$(isDeployed "phee" "$PHEE_NAMESPACE" "ph-ee-connector-mojaloop-java" )
+  result=$(isDeployed "phee" "$PH_NAMESPACE" "ph-ee-connector-mojaloop-java" )
   if [[ "$result" == "true" ]]; then
     if [[ "$redeploy" == "false" ]]; then
       echo "$PH_RELEASE_NAME is already deployed. Skipping deployment."
@@ -427,6 +427,14 @@ function deployPH(){
   
   # now deploy the helm chart 
   deployPhHelmChartFromDir "$PH_NAMESPACE" "$gazelleChartPath" "$PH_VALUES_FILE"
+  # Add stability check for PHEE
+  echo "    Waiting for PaymentHub EE to be stable..."
+  kubectl wait --for=condition=Ready pod --all -n "$PH_NAMESPACE" --timeout=300s
+  if [ $? -ne 0 ]; then
+    echo -e "${RED}PaymentHub EE failed to stabilize. Exiting.${RESET}"
+    exit 1
+  fi
+  echo "    PaymentHub EE is stable"
   # now load the BPMS diagrams we do it here not in the helm chart so that 
   # we can count the sucessful BPMN uploads and be confident that they are working 
   #deployBPMS
@@ -484,6 +492,29 @@ function deployInfrastructure () {
   fi
   check_command_execution "Deploying infra helm chart"
   echo  " [ok] "
+
+  # Add stability check for infrastructure
+  echo "    Waiting for infrastructure to be stable..."
+  kubectl wait --for=condition=Ready pod --all -n "$INFRA_NAMESPACE" --timeout=1800s
+  if [ $? -ne 0 ]; then
+    echo -e "${RED}Infrastructure failed to stabilize. Exiting.${RESET}"
+    exit 1
+  fi
+  NAMESPACE="$INFRA_NAMESPACE"
+  STABLE_COUNT=0
+
+  while [ $STABLE_COUNT -lt 3 ]; do
+    NOT_READY=$(kubectl get pods -n "$NAMESPACE" --no-headers | grep -vE 'Running|Completed' | wc -l)
+    if [ "$NOT_READY" -eq 0 ]; then
+      STABLE_COUNT=$((STABLE_COUNT + 1))
+      echo "✅ All pods ready. Stable count: $STABLE_COUNT"
+    else
+      STABLE_COUNT=0
+      echo "❌ Some pods not ready. Waiting..."
+    fi
+    sleep 10
+  done
+  echo "🎉 All pods are stable and running."
   echo -e "\n${GREEN}============================"
   echo -e "Infrastructure Deployed"
   echo -e "============================${RESET}\n"
@@ -640,6 +671,31 @@ function deployvNext() {
       echo -e "    Proceeding ..."
     fi
   done
+
+  # Add stability check for vNext
+  echo "    Waiting for vNext to be stable..."
+  kubectl wait --for=condition=Ready pod --all -n "$VNEXT_NAMESPACE" --timeout=300s
+  if [ $? -ne 0 ]; then
+    echo -e "${RED}vNext failed to stabilize. Exiting.${RESET}"
+    exit 1
+  fi
+  NAMESPACE="$VNEXT_NAMESPACE"
+  STABLE_COUNT=0
+
+  while [ $STABLE_COUNT -lt 3 ]; do
+    NOT_READY=$(kubectl get pods -n "$NAMESPACE" --no-headers | awk '$2 != "1/1"')
+    
+    if [ -z "$NOT_READY" ]; then
+      STABLE_COUNT=$((STABLE_COUNT + 1))
+      echo "✅ All pods ready. Stable count: $STABLE_COUNT"
+    else
+      STABLE_COUNT=0
+      echo "❌ Some pods not ready. Waiting..."
+    fi
+    sleep 300
+  done
+  echo "🎉 All pods are stable and running."
+  echo "    vNext is stable"
   ## don't do this by default for gazelle v1.1.0 as for v1.1.0 we now have Mifos greenbank/bluebank as much more realistic DFSPs 
   ## It is true that in for vNext or subseqent we might want TTKs for debug and testing purposes hence leaving this here for the moment
   ## vnext_configure_ttk $VNEXT_TTK_FILES_DIR  $VNEXT_NAMESPACE   # configure in the TTKs as participants 
@@ -783,7 +839,7 @@ function deployApps {
   if [[ "$appsToDeploy" == "all" ]]; then
     echo -e "${BLUE}Deploying all apps ...${RESET}"
     deployInfrastructure "$redeploy"
-    deployvNext
+    deployvNext "$redeploy"
     deployPH
     DeployMifosXfromYaml "$MIFOSX_MANIFESTS_DIR"
     deployBPMS

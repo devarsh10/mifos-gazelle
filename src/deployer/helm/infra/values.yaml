@@ -6,6 +6,8 @@ global:
 ## Reference: https://github.com/bitnami/charts/blob/main/bitnami/kafka/values.yaml
 kafka:
   enabled: true
+  image:
+      repository: bitnamilegacy/kafka
   fullnameOverride: "kafka"
   persistence:
     enabled: false
@@ -52,6 +54,8 @@ kafka:
   ## https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml
   zookeeper:
     enabled: true
+    image:
+      repository: bitnamilegacy/zookeeper
     persistence:
       enabled: false
     fullnameOverride: "zookeeper"
@@ -293,6 +297,8 @@ elasticsearch:
   kibana:
     persistence:
       enabled: false
+    image:
+      repository: bitnamilegacy/kibana
     env:
       - name: NODE_OPTIONS
         value: "--max-old-space-size=128" # Set Kibana's JS heap to 128MB 
