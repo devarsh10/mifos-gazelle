@@ -99,7 +99,7 @@ printf "\r==> Check and load Helm repositories    "
 
   # Gazelle Repos List (name and URL)
   local repos=(
-    "kiwigrid https://kiwigrid.github.io"
+    # "kiwigrid https://kiwigrid.github.io"
     "kokuwa https://kokuwaio.github.io/helm-charts"
     "codecentric https://codecentric.github.io/helm-charts"
     "bitnami https://charts.bitnami.com/bitnami"
