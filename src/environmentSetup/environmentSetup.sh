@@ -59,7 +59,7 @@ function add_hosts {
         
         PHEEHOSTS=( ops.$DOMAIN ops-bk.$DOMAIN \
         bulk-processor.$DOMAIN connector-bulk.$DOMAIN messagegateway.$DOMAIN \
-        minio-console.$DOMAIN bill-pay.$DOMAIN channel.$DOMAIN \
+        minio.$DOMAIN minio-console.$DOMAIN bill-pay.$DOMAIN channel.$DOMAIN \
         channel-gsma.$DOMAIN crm.$DOMAIN mockpayment.$DOMAIN \
         mojaloop.$DOMAIN identity-mapper.$DOMAIN vouchers.$DOMAIN \
         zeebeops.$DOMAIN zeebe-operate.$DOMAIN zeebe-gateway.$DOMAIN \
