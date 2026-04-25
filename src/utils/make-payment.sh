@@ -23,6 +23,7 @@ Usage: $0 [-f <config_file>] [-p <payer_msisdn>] [-r <payee_msisdn>] [-t <tenant
  -d X-PayeeDFSP-ID (default: bluebank) [optional]
  -v Enable debug/verbose mode [optional]
  -h Show this help message
+ -a <amount>
 
 Note: If -p or -r are not provided, the script will automatically query for the
       first available client in the respective tenant.
@@ -145,12 +146,13 @@ config_ini=""  # Will be set after parsing options
 
 payer_msisdn=""  # Will be auto-detected from greenbank tenant if not provided
 payee_msisdn=""  # Will be auto-detected from bluebank tenant if not provided
+amount=""
 tenant_id="greenbank"
 payee_dfsp_id="bluebank"
 debug=false
 
 # Parse options
-while getopts ":c:p:r:t:d:vh" opt; do
+while getopts ":c:p:r:t:d:a:vh" opt; do
     case $opt in
         c) config_ini="$OPTARG" ;;
         p) payer_msisdn="$OPTARG" ;;
@@ -158,6 +160,7 @@ while getopts ":c:p:r:t:d:vh" opt; do
         t) tenant_id="$OPTARG" ;;
         d) payee_dfsp_id="$OPTARG" ;;
         v) debug=true ;;
+        a) amount="$OPTARG" ;;
         h) usage; exit 0 ;;
         \?) echo "Invalid option: -$OPTARG" >&2; usage; exit 1 ;;
         :) echo "Option -$OPTARG requires an argument." >&2; usage; exit 1 ;;
@@ -268,15 +271,22 @@ echo -e "${YELLOW}Tenant ID:${RESET} $tenant_id"
 echo -e "${YELLOW}Payee DFSP ID:${RESET} $payee_dfsp_id"
 echo ""
 
-# Prompt for amount with validation
-while true; do
-    read -rp "Enter amount to transfer (0–500): " amount
-    if [[ "$amount" =~ ^[0-9]+$ ]] && (( amount >= 0 && amount <= 500 )); then
-        break
-    else
-        echo "❌ Invalid amount. Please enter a number between 0 and 500."
+if [[ -z "$amount" ]]; then
+    # Prompt for amount with validation
+    while true; do
+        read -rp "Enter amount to transfer (0–500): " amount
+        if [[ "$amount" =~ ^[0-9]+$ ]] && (( amount >= 0 && amount <= 500 )); then
+            break
+        else
+            echo "❌ Invalid amount. Please enter a number between 0 and 500."
+        fi
+    done
+else
+    if ! [[ "$amount" =~ ^[0-9]+$ ]] || (( amount < 0 || amount > 500 )); then
+        echo -e "${RED}Error: Amount must be a number between 0 and 500${RESET}" >&2
+        exit 1
     fi
-done
+fi
 
 # Display final confirmation
 echo ""

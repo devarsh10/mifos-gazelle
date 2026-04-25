@@ -27,20 +27,27 @@ commands:
             fi
 
       - run:
-          name: Health check endpoints
+          name: Check ingress endpoints
           command: |
-            echo "Checking main endpoints..."
-            
-            # Get cluster IP
-            CLUSTER_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}' || echo "127.0.0.1")
-            
-            # Test main endpoints
-            curl -f http://$CLUSTER_IP/health || echo "Default health check failed"
-            curl -f http://mifos.mifos.gazelle.test || echo "MifosX failed"
-            curl -f http://vnextadmin.mifos.gazelle.test || echo "vNext failed"
-            curl -f http://ops.mifos.gazelle.test || echo "Payment Hub failed"
-            
-            echo "Health checks completed"
+            chmod +x ./src/utils/check-endpoints.sh
+            ./src/utils/check-endpoints.sh -c ./config/config.ini
+
+      - run:
+          name: Smoke test - make payment
+          command: |
+            chmod +x ./src/utils/make-payment.sh
+            ./src/utils/make-payment.sh -a 10 -c ./config/config.ini
+
+      - run:
+          name: Run integration tests (cucumber)
+          command: |
+            # TODO: Debug cucumber tests locally against a running deployment first.
+            # Once passing locally, enable by uncommenting the block below.
+            #
+            # git clone https://github.com/openMF/ph-ee-integration-test.git
+            # cd ph-ee-integration-test
+            # mvn test -Dcucumber.filter.tags="@gov and not @ext"
+            echo "Cucumber tests: run locally to debug before enabling here"
 
 jobs:
   deploy-test-amd64:
