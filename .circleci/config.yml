@@ -33,6 +33,11 @@ commands:
             ./src/utils/check-endpoints.sh -c ./config/config.ini
 
       - run:
+          name: Generate test data (clients + vNext registrations)
+          command: |
+            sudo ./run.sh -m deploy -u "$USER" -a setup-data -d true
+
+      - run:
           name: Smoke test - make payment
           command: |
             chmod +x ./src/utils/make-payment.sh
