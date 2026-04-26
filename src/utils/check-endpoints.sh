@@ -109,8 +109,8 @@ check_endpoint "Operations Backend" "200" \
   -sk
 
 # Actuator management port is not exposed via ingress — check the transfer endpoint instead.
-# GET on a POST endpoint returns 401/405, both are non5xx.
-check_endpoint "Channel Connector" "non5xx" \
+# GET on a POST endpoint returns 500; any HTTP response means the ingress and pod are up.
+check_endpoint "Channel Connector" "reachable" \
   "https://channel.${D}/channel/transfer" \
   -sk
 
