@@ -70,6 +70,38 @@ socialregistry:
   ############################################################
 
   # SMTP relay pins ixdotai/smtp:v0.5.2, deleted from Docker Hub (ImagePullBackOff).
+      backup:
+        cronjob:
+          nodeSelector:
+            dedicated: openg2p
+          tolerations:
+            - key: dedicated
+              operator: Equal
+              value: openg2p
+              effect: NoSchedule
+      primary:
+        nodeSelector:
+          dedicated: openg2p
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: openg2p
+            effect: NoSchedule
+      readReplicas:
+        nodeSelector:
+          dedicated: openg2p
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: openg2p
+            effect: NoSchedule
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
   mail:
     enabled: false
 
@@ -80,16 +112,45 @@ socialregistry:
 
   # MOSIP kernel fails to auth as "kerneluser" — reads DB creds from the upstream
   # mosip-config server, not the chart secret, so the password never matches.
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
   idgenerator:
     enabled: false
 
   # Admin UI requires OIDC against the EXTERNAL keycloak hostname, which doesn't
   # resolve from inside the cluster (UnknownHostException).
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
+    springCloudConfig:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
   kafkaUi:
     enabled: false
 
   # No consumer in Gazelle — esignet, keymanager and idgenerator (softhsm's only
   # clients) are all disabled above.
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
   softhsm:
     enabled: false
 
@@ -98,6 +159,13 @@ socialregistry:
   # it's dead weight — and enketo OOMKilled / failed its startup probe
   # repeatedly regardless of limit. Nothing in the core registry depends on it
   # (only dead SR_ODK_URL deep-links in the Odoo UI).
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
   odk-central:
     enabled: false
   odk-central-enketo-redis-main:
@@ -129,6 +197,21 @@ socialregistry:
   # 'reporting' CDC pipeline (debezium + opensearch-kafka-connector) below is
   # independent and stays on.
   ############################################################
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
+    provisioning:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
   opensearch:
     istio:
       enabled: false
@@ -140,6 +223,45 @@ socialregistry:
   # Imports index patterns/dashboards INTO opensearch-dashboards; with the
   # dashboards UI disabled, that Service doesn't exist and the job hangs until
   # timeout.
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    coordinating:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    data:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    ingest:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    master:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
   reporting-init:
     enabled: false
 
@@ -171,6 +293,55 @@ socialregistry:
         limits:
           memory: 1536Mi
 
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
+    init:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    postgresql:
+      primary:
+        nodeSelector:
+          dedicated: openg2p
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: openg2p
+            effect: NoSchedule
+      readReplicas:
+        nodeSelector:
+          dedicated: openg2p
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: openg2p
+            effect: NoSchedule
+    redis:
+      master:
+        nodeSelector:
+          dedicated: openg2p
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: openg2p
+            effect: NoSchedule
+      replica:
+        nodeSelector:
+          dedicated: openg2p
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: openg2p
+            effect: NoSchedule
   landing:
     istio:
       enabled: false
@@ -181,6 +352,13 @@ socialregistry:
       limits:
         memory: 128Mi
 
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
   kafka:
     controller:
       resources:
@@ -190,6 +368,37 @@ socialregistry:
         limits:
           memory: 1Gi
 
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    broker:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    provisioning:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    zookeeper:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
   reporting:
     debezium:
       resources:
@@ -198,6 +407,13 @@ socialregistry:
           memory: 256Mi
         limits:
           memory: 768Mi
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
     opensearch-kafka-connector:
       resources:
         requests:
@@ -208,6 +424,13 @@ socialregistry:
 
   # producer + worker Deployments (unbounded upstream). The bg-tasks redis is a
   # SEPARATE top-level chart aliased `bgTasksRedis` below, not nested here.
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
   openg2p-registry-bg-tasks:
     producer:
       resources:
@@ -217,6 +440,13 @@ socialregistry:
         # Live usage ~450Mi.
         limits:
           memory: 768Mi
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
     worker:
       resources:
         requests:
@@ -227,6 +457,13 @@ socialregistry:
 
   # Redis instances are top-level aliases in the SR Chart.yaml (bgTasksRedis,
   # supersetRedis), NOT sub-keys of their consuming charts.
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
   bgTasksRedis:
     master:
       resources:
@@ -243,3 +480,52 @@ socialregistry:
           memory: 64Mi
         limits:
           memory: 192Mi
+  artifactory:
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
+  esignet:
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
+    oidcUi:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+  esignetRedis:
+    master:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    replica:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+  mock-identity-system:
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule

@@ -37,6 +37,13 @@ g2pbridge:
   # are SEPARATE releases each with their own postgres, so the DB hostnames below point at
   # the actual per-module postgres services instead of the shared commons-postgresql upstream assumes.
   ############################################################
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
   g2pBridgeApi:
     hostname: "g2p-bridge.mifos.gazelle.test"
     envVars:
@@ -86,3 +93,20 @@ g2pbridge:
           secretName: openg2p-tls
     istio:
       enabled: false
+  redis:
+    master:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    replica:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule

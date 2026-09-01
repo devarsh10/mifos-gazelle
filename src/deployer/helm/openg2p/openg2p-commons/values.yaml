@@ -87,6 +87,47 @@ commons:
       limits:
         memory: 2560Mi
 
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
+    keycloakConfigCli:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    postgresql:
+      backup:
+        cronjob:
+          nodeSelector:
+            dedicated: openg2p
+          tolerations:
+            - key: dedicated
+              operator: Equal
+              value: openg2p
+              effect: NoSchedule
+      primary:
+        nodeSelector:
+          dedicated: openg2p
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: openg2p
+            effect: NoSchedule
+      readReplicas:
+        nodeSelector:
+          dedicated: openg2p
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: openg2p
+            effect: NoSchedule
   postgresql:
     istio:
       enabled: false
@@ -104,6 +145,31 @@ commons:
   # Disabling also drops the minio-og2p ingress — keep the TLS SAN in openg2p.sh
   # and the /etc/hosts list in environmentSetup.sh in step with that.
   ############################################################
+    backup:
+      cronjob:
+        nodeSelector:
+          dedicated: openg2p
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: openg2p
+            effect: NoSchedule
+    primary:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    readReplicas:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
   minio:
     enabled: false
 
@@ -119,6 +185,21 @@ commons:
   # OIDC config has no ES equivalent). Re-enable this chart rather than
   # repointing anything at infra-elasticsearch.
   ############################################################
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
+    provisioning:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
   opensearch:
     enabled: false
 
@@ -128,6 +209,46 @@ commons:
   # Kafka-UI needs no separate toggle: every kafka-ui template in commons-base
   # is guarded on '.Values.kafka.enabled' before its own, so both go together.
   ############################################################
+    coordinating:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    dashboards:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    data:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    ingest:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    master:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
   kafka:
     enabled: false
 
@@ -135,6 +256,38 @@ commons:
   # SoftHSM — its only clients are keymanager, esignet and idgenerator, none of
   # which Gazelle deploys (all three are disabled in the social-registry values).
   ############################################################
+    broker:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    controller:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    provisioning:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    zookeeper:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
   softhsm:
     enabled: false
 
@@ -152,9 +305,47 @@ commons:
   # and at 0 the workload drops out entirely. A few inert ConfigMaps, a
   # ServiceAccount and a headless Service remain; no pods, no memory.
   ############################################################
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
   redis:
     master:
       count: 0
   redis-auth:
     master:
       count: 0
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+    replica:
+      nodeSelector:
+        dedicated: openg2p
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: openg2p
+          effect: NoSchedule
+  kafkaUi:
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
+  postgres-init:
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule

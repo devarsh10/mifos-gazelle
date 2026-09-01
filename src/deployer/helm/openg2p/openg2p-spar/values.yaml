@@ -21,6 +21,13 @@ spar:
 
   # keycloak-init reads the Keycloak admin password from existingSecret; same naming
   # mismatch — upstream default 'commons-keycloak' vs actual 'openg2p-commons-keycloak'.
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
   keycloak-init:
     keycloak:
       existingSecret: "openg2p-commons-keycloak"
@@ -45,6 +52,13 @@ spar:
     istio:
       enabled: false
 
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
   benePortalAPI:
     benePortalHostname: "spar.mifos.gazelle.test"
     ingress:
@@ -64,3 +78,10 @@ spar:
           secretName: openg2p-tls
     istio:
       enabled: false
+    nodeSelector:
+      dedicated: openg2p
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: openg2p
+        effect: NoSchedule
