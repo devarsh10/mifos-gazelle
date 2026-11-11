@@ -71,6 +71,16 @@ commands:
             chmod +x src/utils/make-payment.sh
             echo "10" | src/utils/make-payment.sh
 
+      - run:
+          name: Run Cucumber login tests
+          command: |
+            chmod +x src/utils/install-jdk.sh
+            src/utils/install-jdk.sh 21
+            source ~/.jdk-env
+            cd tests/cucumber
+            chmod +x gradlew
+            ./gradlew test
+
 jobs:
   deploy-test-amd64:
     machine:
