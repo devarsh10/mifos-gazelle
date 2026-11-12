@@ -72,6 +72,15 @@ commands:
             echo "10" | src/utils/make-payment.sh
 
       - run:
+          name: Add 8GB swap
+          command: |
+            sudo fallocate -l 8G /swapfile
+            sudo chmod 600 /swapfile
+            sudo mkswap /swapfile
+            sudo swapon /swapfile
+            free -m
+            
+      - run:
           name: Run Cucumber login tests
           command: |
             chmod +x src/utils/install-jdk.sh
