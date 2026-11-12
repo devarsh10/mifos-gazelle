@@ -79,7 +79,7 @@ commands:
             source ~/.jdk-env
             cd tests/cucumber
             chmod +x gradlew
-            ./gradlew test
+            ./gradlew test --no-daemon -Dorg.gradle.jvmargs=-Xmx256m
 
 jobs:
   deploy-test-amd64:
